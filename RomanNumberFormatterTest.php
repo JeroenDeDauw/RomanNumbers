@@ -182,6 +182,80 @@ class RomanNumberFormatterTest extends PHPUnit_Framework_TestCase {
 		return $argLists;
 	}
 
+	/**
+	 * @dataProvider alternateSymbolMapProvider
+	 */
+	public function testAlternateSymbolMap( $expected, $input ) {
+		$symbolMap = array(
+			array( 'A', 'B' ),
+			array( 'C', 'D' ),
+		);
 
+		$formatter = new RomanNumberFormatter( $symbolMap );
+
+		$result = $formatter->formatNumber( $input );
+		$this->assertEquals( $expected, $result );
+	}
+
+	public function alternateSymbolMapProvider() {
+		$argLists = array();
+
+		$argLists[] = array( 'A', 1 );
+		$argLists[] = array( 'AAA', 3 );
+		$argLists[] = array( 'AB', 4 );
+		$argLists[] = array( 'AC', 9 );
+		$argLists[] = array( 'DCCAC', 79 );
+
+		return $argLists;
+	}
+
+	/**
+	 * @dataProvider upperBoundProvider
+	 */
+	public function testGetUpperBound( array $symbolMap, $expected ) {
+		$formatter = new RomanNumberFormatter( $symbolMap );
+		$this->assertEquals( $expected, $formatter->getUpperBound() );
+	}
+
+	public function upperBoundProvider() {
+		$argLists = array();
+
+		$argLists[] = array(
+			array(),
+			3999
+		);
+
+		$argLists[] = array(
+			array(
+				array( 'I' ),
+			),
+			3
+		);
+
+		$argLists[] = array(
+			array(
+				array( 'I', 'V' ),
+			),
+			8
+		);
+
+		$argLists[] = array(
+			array(
+				array( 'I', 'V' ),
+				array( 'X', ),
+			),
+			39
+		);
+
+		$argLists[] = array(
+			array(
+				array( 'I', 'V' ),
+				array( 'X', 'L' ),
+			),
+			89
+		);
+
+		return $argLists;
+	}
 
 }

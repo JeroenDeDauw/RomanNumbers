@@ -2,15 +2,17 @@
 
 class RomanNumberFormatter {
 
-	protected $symbolMap;
+	protected $symbolMap = array(
+		array( 'I', 'V' ),
+		array( 'X', 'L' ),
+		array( 'C', 'D' ),
+		array( 'M' ),
+	);
 
-	public function __construct() {
-		$this->symbolMap = array(
-			array( 'I', 'V' ),
-			array( 'X', 'L' ),
-			array( 'C', 'D' ),
-			array( 'M' ),
-		);
+	public function __construct( array $symbolMap = array() ) {
+		if ( $symbolMap !== array() ) {
+			$this->symbolMap = $symbolMap;
+		}
 	}
 
 	public function formatNumber( $number ) {
@@ -54,7 +56,7 @@ class RomanNumberFormatter {
 		return $romanNumber;
 	}
 
-	protected function getUpperBound() {
+	public function getUpperBound() {
 		$symbolGroupCount = count( $this->symbolMap );
 		$valueOfOne = pow( 10, $symbolGroupCount - 1 );
 
