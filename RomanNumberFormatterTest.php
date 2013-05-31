@@ -255,6 +255,15 @@ class RomanNumberFormatterTest extends PHPUnit_Framework_TestCase {
 			89
 		);
 
+		$argLists[] = array(
+			array(
+				array( 'A', 'B' ),
+				array( 'C', 'D' ),
+				array( 'E', 'F' ),
+			),
+			899
+		);
+
 		return $argLists;
 	}
 
