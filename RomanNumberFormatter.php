@@ -14,6 +14,28 @@ class RomanNumberFormatter {
 	}
 
 	public function formatNumber( $number ) {
+		$this->ensureNumberIsAnInteger( $number );
+		$this->ensureNumberIsWithinBounds( $number );
+		return $this->constructRomanString( $number );
+	}
+
+	protected function ensureNumberIsAnInteger( $number ) {
+		if ( !is_int( $number ) ) {
+			throw new InvalidArgumentException( 'Can only translate integers to roman' );
+		}
+	}
+
+	protected function ensureNumberIsWithinBounds( $number ) {
+		if ( $number < 1 ) {
+			throw new OutOfRangeException( 'Numbers under one cannot be translated to roman' );
+		}
+
+		if ( $number > $this->getUpperBound() ) {
+			throw new OutOfBoundsException( 'The provided number is to big to be fully translated to roman' );
+		}
+	}
+
+	protected function constructRomanString( $number ) {
 		$romanNumber = '';
 
 		for ( $i = 0; $i < count( $this->symbolMap ) ; $i++ ) {
@@ -22,7 +44,7 @@ class RomanNumberFormatter {
 			$digit = $remainder / pow( 10, $i );
 
 			$number -= $remainder;
-			$romanNumber .= $this->formatDigit( $digit, $i );
+			$romanNumber = $this->formatDigit( $digit, $i ) . $romanNumber;
 
 			if ( $number === 0 ) {
 				break;
@@ -30,6 +52,15 @@ class RomanNumberFormatter {
 		}
 
 		return $romanNumber;
+	}
+
+	protected function getUpperBound() {
+		$symbolGroupCount = count( $this->symbolMap );
+		$valueOfOne = pow( 10, $symbolGroupCount - 1 );
+
+		$hasFiveSymbol = array_key_exists( 1, $this->symbolMap[$symbolGroupCount - 1] );
+
+		return $valueOfOne * ( $hasFiveSymbol ? 9 : 4 ) - 1;
 	}
 
 	protected function formatDigit( $digit, $orderOfMagnitude ) {

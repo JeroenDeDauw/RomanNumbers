@@ -93,7 +93,7 @@ class RomanNumberFormatterTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @dataProvider numbersWithNineProvider
+	 * @dataProvider numbersWithMultipleDigitsProvider
 	 */
 	public function testFormatNumbersMultipleDigits( $expected, $input ) {
 		$this->assertInputResultsInExpected( $expected, $input );
@@ -108,9 +108,80 @@ class RomanNumberFormatterTest extends PHPUnit_Framework_TestCase {
 		$argLists[] = array( 'XIII', 13 );
 		$argLists[] = array( 'XXXIII', 33 );
 		$argLists[] = array( 'CXCI', 191 );
-		$argLists[] = array( 'MMXMXCVIII', 2998 );
+		$argLists[] = array( 'MMMCMXCIX', 3999 );
+		$argLists[] = array( 'DCCCXCIX', 899 );
 
 		return $argLists;
 	}
+
+	/**
+	 * @dataProvider toBigNumberProvider
+	 */
+	public function testFormatToBigNumber( $toBigNumber ) {
+		$formatter = new RomanNumberFormatter();
+
+		$this->setExpectedException( 'OutOfBoundsException' );
+		$formatter->formatNumber( $toBigNumber );
+	}
+
+	public function toBigNumberProvider() {
+		$argLists = array();
+
+		$argLists[] = array( 4000 );
+		$argLists[] = array( 10000 );
+
+		return $argLists;
+	}
+
+	/**
+	 * @dataProvider toSmallNumberProvider
+	 */
+	public function testFormatToSmallNumber( $toSmallNumber ) {
+		$formatter = new RomanNumberFormatter();
+
+		$this->setExpectedException( 'OutOfRangeException' );
+		$formatter->formatNumber( $toSmallNumber );
+	}
+
+	public function toSmallNumberProvider() {
+		$argLists = array();
+
+		$argLists[] = array( 0 );
+		$argLists[] = array( -1 );
+		$argLists[] = array( -42 );
+		$argLists[] = array( -9001 );
+
+		return $argLists;
+	}
+
+	/**
+	 * @dataProvider invalidNumberProvider
+	 */
+	public function testFormatInvalidNumber( $invalidNumber ) {
+		$formatter = new RomanNumberFormatter();
+
+		$this->setExpectedException( 'InvalidArgumentException' );
+		$formatter->formatNumber( $invalidNumber );
+	}
+
+	public function invalidNumberProvider() {
+		$argLists = array();
+
+		$argLists[] = array( '1' );
+		$argLists[] = array( '0' );
+		$argLists[] = array( '42' );
+		$argLists[] = array( '4.2' );
+		$argLists[] = array( 4.2 );
+		$argLists[] = array( 4.0 );
+		$argLists[] = array( 9000.1 );
+		$argLists[] = array( 0.0001 );
+		$argLists[] = array( false );
+		$argLists[] = array( true );
+		$argLists[] = array( null );
+
+		return $argLists;
+	}
+
+
 
 }
