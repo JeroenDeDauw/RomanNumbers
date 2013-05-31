@@ -37,6 +37,15 @@ class RomanNumberFormatter {
 		}
 	}
 
+	public function getUpperBound() {
+		$symbolGroupCount = count( $this->symbolMap );
+		$valueOfOne = pow( 10, $symbolGroupCount - 1 );
+
+		$hasFiveSymbol = array_key_exists( 1, $this->symbolMap[$symbolGroupCount - 1] );
+
+		return $valueOfOne * ( $hasFiveSymbol ? 9 : 4 ) - 1;
+	}
+
 	protected function constructRomanString( $number ) {
 		$romanNumber = '';
 
@@ -54,15 +63,6 @@ class RomanNumberFormatter {
 		}
 
 		return $romanNumber;
-	}
-
-	public function getUpperBound() {
-		$symbolGroupCount = count( $this->symbolMap );
-		$valueOfOne = pow( 10, $symbolGroupCount - 1 );
-
-		$hasFiveSymbol = array_key_exists( 1, $this->symbolMap[$symbolGroupCount - 1] );
-
-		return $valueOfOne * ( $hasFiveSymbol ? 9 : 4 ) - 1;
 	}
 
 	protected function formatDigit( $digit, $orderOfMagnitude ) {
